@@ -8,8 +8,11 @@ import pickle
 
 def serialize_and_save_to_file(data, filename):
     """Serialize data and save it to a file."""
-    with open(filename, "wb") as file:
-        pickle.dump(data, file)
+    try:
+        with open(filename, "wb") as file:
+            pickle.dump(data, file)
+    except Exception as e:
+        raise TypeError("Data cannot be serialized") from e
 
 
 def load_and_deserialize(filename):
