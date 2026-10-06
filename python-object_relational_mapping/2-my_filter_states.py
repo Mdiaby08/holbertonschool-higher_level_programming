@@ -25,7 +25,7 @@ def main():
 
     cur = db.cursor()
     query = (
-        "SELECT * FROM states WHERE name = '{}' "
+        "SELECT * FROM states WHERE BINARY name = '{}' "
         "ORDER BY id ASC".format(state_name)
     )
     cur.execute(query)
