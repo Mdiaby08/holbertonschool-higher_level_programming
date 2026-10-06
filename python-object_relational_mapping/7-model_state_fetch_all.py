@@ -1,34 +1,37 @@
 #!/usr/bin/python3
 """
-This script lists all State objects from the database hbtn_0e_6_usa.
+Lists all State objects from the database hbtn_0e_6_usa
 """
 
 import sys
-import SQLAlchemy
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from model_state import Base, State
+
 
 def main():
-    """Connects to MySQL and prints all State objects."""
+    """Connects to MySQL and lists all State objects."""
     username = sys.argv[1]
     password = sys.argv[2]
     db_name = sys.argv[3]
 
-    db = MySQLdb.connect(
-        host="localhost",
-        port=3306,
-        user=username,
-        passwd=password,
-        db=db_name
+    engine = create_engine(
+        'mysql+mysqldb://{}:{}@localhost/{}'.format(
+            username, password, db_name
+        ),
+        pool_pre_ping=True
     )
 
-    cur = db.cursor()
-    cur.execute("SELECT * FROM states ORDER BY id ASC")
+    Session = sessionmaker(bind=engine)
+    session = Session()
 
-    rows = cur.fetchall()
-    for row in rows:
-        print(row)
+    states = session.query(State).order_by(State.id).all()
 
-    cur.close()
-    db.close()
+    for state in states:
+        print(f"{state.id}: {state.name}")
+
+    session.close()
+
 
 if __name__ == "__main__":
     main()
